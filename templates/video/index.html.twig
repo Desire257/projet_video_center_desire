@@ -1,43 +1,71 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Video index{% endblock %}
+{% block title %}Mes top vidéos!
+{% endblock %}
 
 {% block body %}
-    <h1>Video index</h1>
+{% if app.user %}
+{% if app.user.isVerified %} 
+<div class"class" align="center">
+<h1>Bienvenu dans  Vidéo center</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>VideoLink</th>
-                <th>Description</th>
-                <th>CreatedAt</th>
-                <th>UptdatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for video in videos %}
-            <tr>
-                <td>{{ video.id }}</td>
-                <td>{{ video.title }}</td>
-                <td>{{ video.videoLink }}</td>
-                <td>{{ video.description }}</td>
-                <td>{{ video.createdAt ? video.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ video.uptdatedAt ? video.uptdatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_video_show', {'id': video.id}) }}">show</a>
-                    <a href="{{ path('app_video_edit', {'id': video.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<p>Sur ce site vous trouverez plusieurs vidéos intéressantes. 
+Pour certaines vidéos, il faudra être enregistré pour les voirs.</p>
+<a class="btn btn-outline-secondary" href="{{path('app_account') }}" role="button">Mon profil</a>
+<a class="btn btn-outline-primary" href="{{path('app_logout')}}" role="button">Se déconnecter</a>
+</div>
 
-    <a href="{{ path('app_video_new') }}">Create new</a>
+<br>
+{% endif %}
+{%  else %}
+<div class"class" align="center">
+<h1>Bienvenu dans  Vidéo center</h1>
+
+<p>Sur ce site vous trouverez plusieurs vidéos intéressantes. 
+Pour certaines vidéos, il faudra être enregistré pour les voirs.</p>
+<a class="btn btn-outline-secondary" href="{{path('app_register') }}" role="button">Créer un compte</a>
+<a class="btn btn-outline-primary" href="{{path('app_login')}}" role="button">Se connecter</a>
+</div>
+ 
+ {% endif %}
+ <br>
+ 
+ {% include "components/_search_data.html.twig" with {
+        form: form
+    } only %}
+
+        <div class="row row-cols-1 row-cols-md-2 g-4"  align ="center">
+        {% for video in pagination %}
+
+
+               <div class="col">
+                <div class="card shadow p-3 mb-5 bg-light rounded">
+                <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                    </div>
+                     <iframe width="400" height="250" src={{video.videoLink}}></iframe>
+                    <div class="card-body">
+                        <h5 class="card-description">{{ video.description }}</h5>
+                        <div class="col md-3">
+                        <p> Posté {{ video.createdAt|ago }} par {{ video.user.firstname }} {{video.user.lastname }}</p> 
+                        </div>
+                         <a class="btn btn-outline-secondary" href="{{ path('app_video_show', {'id': video.id}) }}">Détail</a>
+                    <a class="btn btn-outline-primary" href="{{ path('app_video_edit', {'id': video.id}) }}">Editer</a>
+                    </div>
+                </div>
+
+            </div>
+
+              {% endfor %}
+    </div>
+
+
+    <div class="mb-5 mt-5" id="addvideo">
+          <a href="{{ path('app_video_create') }} " style="text-decoration:none">Poster une nouvelle Vidéo</a>
+    </div>
+     {{ knp_pagination_render(pagination, null, {}, {
+   'align': 'center',
+   'size': 'large',
+   'rounded': true,
+    }) }}
 {% endblock %}

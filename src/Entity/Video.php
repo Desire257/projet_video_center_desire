@@ -5,8 +5,11 @@ namespace App\Entity;
 use App\Repository\VideoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\Timestampable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: "videos")]
 class Video
 {
@@ -14,7 +17,7 @@ class Video
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    use Timestampable;
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -22,13 +25,25 @@ class Video
     private ?string $videoLink = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Veuillez entrer une description")]
+    #[Assert\Length(min: 10, minMessage: "Vous devez avoir une description de minimum 10 caractères")]
+    #[Assert\NotEqualTo(value: "merde", message: "Vous ne pouvez pas introduire le mot grossier (m****)")]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:'datetime_immutable', options:['default'=>'CURRENT_TIMESTAMP'])] 
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(type:'datetime_immutable', options:['default'=>'CURRENT_TIMESTAMP'])] 
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'videos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     #[ORM\Column]
-    private ?\DateTimeImmutable $uptdatedAt = null;
+    private ?bool $premiumVideo = null;
+
+   
 
     public function getId(): ?int
     {
@@ -71,26 +86,26 @@ class Video
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getUser(): ?User
     {
-        return $this->createdAt;
+        return $this->user;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setUser(?User $user): static
     {
-        $this->createdAt = $createdAt;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUptdatedAt(): ?\DateTimeImmutable
+    public function isPremiumVideo(): ?bool
     {
-        return $this->uptdatedAt;
+        return $this->premiumVideo;
     }
 
-    public function setUptdatedAt(\DateTimeImmutable $uptdatedAt): static
+    public function setPremiumVideo(bool $premiumVideo): static
     {
-        $this->uptdatedAt = $uptdatedAt;
+        $this->premiumVideo = $premiumVideo;
 
         return $this;
     }

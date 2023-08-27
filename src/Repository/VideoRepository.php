@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Video;
+use App\Model\SearchData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,6 +40,15 @@ class VideoRepository extends ServiceEntityRepository
         }
     }
 
+    public function paginationQuery()
+    {
+        return $this->createQueryBuilder('v')  
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()
+            
+        ;
+    }
+
 //    /**
 //     * @return Video[] Returns an array of Video objects
 //     */
@@ -63,4 +73,19 @@ class VideoRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function findBySearch(SearchData $searchData)
+    {
+        $data = $this->createQueryBuilder('v')
+            ->addOrderBy('v.createdAt', 'DESC');
+        if (!empty($searchData->q)) {
+            $data = $data
+                ->andWhere('v.title LIKE :q')
+                ->setParameter('q', "%{$searchData->q}%");
+        }
+        return $data
+            ->getQuery();
+        // ->getResult();
+
+    }
 }

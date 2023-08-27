@@ -6,6 +6,8 @@ use App\Entity\Video;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 class VideoType extends AbstractType
 {
@@ -13,10 +15,12 @@ class VideoType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('videoLink')
+            ->add('videoLink', TextType::class, [
+                'label' => 'Lien vidéo (YouTube)',
+            ])
             ->add('description')
-            ->add('createdAt')
-            ->add('uptdatedAt')
+            ->add('premiumVideo')
+
         ;
     }
 

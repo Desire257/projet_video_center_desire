@@ -16,27 +16,21 @@
                 <td>{{ video.title }}</td>
             </tr>
             <tr>
-                <th>VideoLink</th>
-                <td>{{ video.videoLink }}</td>
+                {# <th>VideoLink</th> #}
+                 <iframe width="640" height="480" src={{video.videoLink}}></iframe>
+                {# <td>{{ video.videoLink }}</td> #}
             </tr>
             <tr>
                 <th>Description</th>
                 <td>{{ video.description }}</td>
             </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ video.createdAt ? video.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UptdatedAt</th>
-                <td>{{ video.uptdatedAt ? video.uptdatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
+
         </tbody>
     </table>
 
-    <a href="{{ path('app_video_index') }}">back to list</a>
+    <a href="{{ path('app_home') }}">Retour à l'accueil</a>
 
-    <a href="{{ path('app_video_edit', {'id': video.id}) }}">edit</a>
+    <a href="{{ path('app_video_edit', {'id': video.id}) }}">Editer</a>
 
     {{ include('video/_delete_form.html.twig') }}
 {% endblock %}
