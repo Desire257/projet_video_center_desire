@@ -29,10 +29,11 @@ Pour certaines vidéos, il faudra être enregistré pour les voirs.</p>
  
  {% endif %}
  <br>
- 
+{% if app.user %}
  {% include "components/_search_data.html.twig" with {
         form: form
     } only %}
+    {% endif %}
 
         <div class="row row-cols-1 row-cols-md-2 g-4"  align ="center">
         {% for video in pagination %}
@@ -49,8 +50,12 @@ Pour certaines vidéos, il faudra être enregistré pour les voirs.</p>
                         <div class="col md-3">
                         <p> Posté {{ video.createdAt|ago }} par {{ video.user.firstname }} {{video.user.lastname }}</p> 
                         </div>
-                         <a class="btn btn-outline-secondary" href="{{ path('app_video_show', {'id': video.id}) }}">Détail</a>
+                         <a class="btn btn-outline-secondary" href="{{ path('app_video_show', {'id': video.id}) }}">Détails</a>
+           {% if app.user %}
+           {% if video.user.email == app.user.email %}
                     <a class="btn btn-outline-primary" href="{{ path('app_video_edit', {'id': video.id}) }}">Editer</a>
+                  {% endif %}
+                  {% endif %}  
                     </div>
                 </div>
 
